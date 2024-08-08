@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <style>
+        @keyframes twinkling {
+            0% { opacity: 0; }
+            50% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            position: relative;
+            background: radial-gradient(circle, #000000 30%, #1b2735 100%);
+            color: white;
+            background-size: cover;
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            opacity: 0;
+            animation: twinkling 1.5s infinite ease-in-out;
+        }
+
+        .star:nth-child(even) {
+            animation-duration: 2s;
+        }
+
+        .star:nth-child(odd) {
+            animation-duration: 2.5s;
+        }
+
+        .container {
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            width: 90%;
+            max-width: 500px;
+            z-index: 1;
+            position: relative;
+        }
+
+        .weather-info, .search, .forecast {
+            margin-top: 20px;
+        }
+
+        .weather-info p {
+            font-size: 2em;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        input {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            width: 100%;
+            max-width: 300px;
+            margin-bottom: 10px;
+        }
+
+        button {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+            margin-top: 10px;
+            width: 100%;
+            max-width: 150px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .forecast-item {
+            margin-top: 10px;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+
+            .weather-info p, .forecast-item {
+                font-size: 1.5em;
+            }
+
+            input, button {
+                font-size: 14px;
+            }
+        }
+
+        /* Generate stars across the entire background */
+        .star:nth-child(1) { left: 5%; top: 10%; }
+        .star:nth-child(2) { left: 15%; top: 20%; }
+        .star:nth-child(3) { left: 25%; top: 30%; }
+        .star:nth-child(4) { left: 35%; top: 40%; }
+        .star:nth-child(5) { left: 45%; top: 50%; }
+        .star:nth-child(6) { left: 55%; top: 60%; }
+        .star:nth-child(7) { left: 65%; top: 70%; }
+        .star:nth-child(8) { left: 75%; top: 80%; }
+        .star:nth-child(9) { left: 85%; top: 90%; }
+        .star:nth-child(10) { left: 10%; top: 80%; }
+        .star:nth-child(11) { left: 20%; top: 70%; }
+        .star:nth-child(12) { left: 30%; top: 60%; }
+        .star:nth-child(13) { left: 40%; top: 50%; }
+        .star:nth-child(14) { left: 50%; top: 40%; }
+        .star:nth-child(15) { left: 60%; top: 30%; }
+        .star:nth-child(16) { left: 70%; top: 20%; }
+        .star:nth-child(17) { left: 80%; top: 10%; }
+        .star:nth-child(18) { left: 90%; top: 20%; }
+        .star:nth-child(19) { left: 25%; top: 90%; }
+        .star:nth-child(20) { left: 35%; top: 80%; }
+        .star:nth-child(21) { left: 45%; top: 70%; }
+        .star:nth-child(22) { left: 55%; top: 60%; }
+        .star:nth-child(23) { left: 65%; top: 50%; }
+        .star:nth-child(24) { left: 75%; top: 40%; }
+        .star:nth-child(25) { left: 85%; top: 30%; }
+        .star:nth-child(26) { left: 10%; top: 20%; }
+        .star:nth-child(27) { left: 20%; top: 10%; }
+        .star:nth-child(28) { left: 30%; top: 20%; }
+        .star:nth-child(29) { left: 40%; top: 30%; }
+        .star:nth-child(30) { left: 50%; top: 40%; }
+        .star:nth-child(31) { left: 60%; top: 50%; }
+        .star:nth-child(32) { left: 70%; top: 60%; }
+        .star:nth-child(33) { left: 80%; top: 70%; }
+        .star:nth-child(34) { left: 90%; top: 80%; }
+        .star:nth-child(35) { left: 20%; top: 40%; }
+        .star:nth-child(36) { left: 30%; top: 50%; }
+        .star:nth-child(37) { left: 40%; top: 60%; }
+        .star:nth-child(38) { left: 50%; top: 70%; }
+        .star:nth-child(39) { left: 60%; top: 80%; }
+        .star:nth-child(40) { left: 70%; top: 90%; }
+        .star:nth-child(41) { left: 80%; top: 10%; }
+        .star:nth-child(42) { left: 90%; top: 20%; }
+    </style>
+</head>
+<body>
+    <!-- Stars covering the full background -->
+    <div class="star" style="left: 5%; top: 10%;"></div>
+    <div class="star" style="left: 15%; top: 20%;"></div>
+    <div class="star" style="left: 25%; top: 30%;"></div>
+    <div class="star" style="left: 35%; top: 40%;"></div>
+    <div class="star" style="left: 45%; top: 50%;"></div>
+    <div class="star" style="left: 55%; top: 60%;"></div>
+    <div class="star" style="left: 65%; top: 70%;"></div>
+    <div class="star" style="left: 75%; top: 80%;"></div>
+    <div class="star" style="left: 85%; top: 90%;"></div>
+    <div class="star" style="left: 10%; top: 80%;"></div>
+    <div class="star" style="left: 20%; top: 70%;"></div>
+    <div class="star" style="left: 30%; top: 60%;"></div>
+    <div class="star" style="left: 40%; top: 50%;"></div>
+    <div class="star" style="left: 50%; top: 40%;"></div>
+    <div class="star" style="left: 60%; top: 30%;"></div>
+    <div class="star" style="left: 70%; top: 20%;"></div>
+    <div class="star" style="left: 80%; top: 10%;"></div>
+    <div class="star" style="left: 90%; top: 20%;"></div>
+    <div class="star" style="left: 25%; top: 90%;"></div>
+    <div class="star" style="left: 35%; top: 80%;"></div>
+    <div class="star" style="left: 45%; top: 70%;"></div>
+    <div class="star" style="left: 55%; top: 60%;"></div>
+    <div class="star" style="left: 65%; top: 50%;"></div>
+    <div class="star" style="left: 75%; top: 40%;"></div>
+    <div class="star" style="left: 85%; top: 30%;"></div>
+    <div class="star" style="left: 10%; top: 20%;"></div>
+    <div class="star" style="left: 20%; top: 10%;"></div>
+    <div class="star" style="left: 30%; top: 20%;"></div>
+    <div class="star" style="left: 40%; top: 30%;"></div>
+    <div class="star" style="left: 50%; top: 40%;"></div>
+    <div class="star" style="left: 60%; top: 50%;"></div>
+    <div class="star" style="left: 70%; top: 60%;"></div>
+    <div class="star" style="left: 80%; top: 70%;"></div>
+    <div class="star" style="left: 90%; top: 80%;"></div>
+    <div class="star" style="left: 20%; top: 40%;"></div>
+    <div class="star" style="left: 30%; top: 50%;"></div>
+    <div class="star" style="left: 40%; top: 60%;"></div>
+    <div class="star" style="left: 50%; top: 70%;"></div>
+    <div class="star" style="left: 60%; top: 80%;"></div>
+    <div class="star" style="left: 70%; top: 90%;"></div>
+    <div class="star" style="left: 80%; top: 10%;"></div>
+    <div class="star" style="left: 90%; top: 20%;"></div>
+
+    <div class="container">
+        <h1>Weather App</h1>
+        <div class="weather-info">
+            <p class="city-name">City Name</p>
+            <p class="temperature">Temperature: --°C</p>
+            <p class="weather-condition">Condition: --</p>
+        </div>
+        <div class="search">
+            <input type="text" id="city-input" placeholder="Enter city name">
+            <button id="search-btn">Search</button>
+        </div>
+        <div class="forecast">
+            <!-- 5-day forecast will be displayed here -->
+        </div>
+    </div>
+    <script>
+        const apiKey = 'c349ebec38dacfc8d5dc75b71cfeea08';
+        const apiUrl = 'https://api.openweathermap.org/data/2.5/weather?q=';
+        const forecastApiUrl = 'https://api.openweathermap.org/data/2.5/forecast?q=';
+
+        async function fetchWeather(city) {
+            try {
+                const response = await fetch(`${apiUrl}${city}&appid=${apiKey}&units=metric`);
+                const data = await response.json();
+                displayWeather(data);
+            } catch (error) {
+                console.error('Error fetching weather data:', error);
+            }
+        }
+
+        function displayWeather(data) {
+            const cityName = document.querySelector('.city-name');
+            const temperature = document.querySelector('.temperature');
+            const weatherCondition = document.querySelector('.weather-condition');
+
+            cityName.textContent = data.name;
+            temperature.textContent = `Temperature: ${data.main.temp}°C`;
+            weatherCondition.textContent = `Condition: ${data.weather[0].description}`;
+        }
+
+        async function fetchForecast(city) {
+            try {
+                const response = await fetch(`${forecastApiUrl}${city}&appid=${apiKey}&units=metric`);
+                const data = await response.json();
+                displayForecast(data);
+            } catch (error) {
+                console.error('Error fetching forecast data:', error);
+            }
+        }
+
+        function displayForecast(data) {
+            const forecastContainer = document.querySelector('.forecast');
+            forecastContainer.innerHTML = '';
+
+            const forecastList = data.list.filter((_, index) => index % 8 === 0);
+
+            forecastList.forEach(forecast => {
+                const forecastItem = document.createElement('div');
+                forecastItem.classList.add('forecast-item');
+
+                const date = new Date(forecast.dt_txt).toDateString();
+                const temp = forecast.main.temp;
+                const condition = forecast.weather[0].description;
+
+                forecastItem.innerHTML = `
+                    <p>${date}</p>
+                    <p>Temperature: ${temp}°C</p>
+                    <p>Condition: ${condition}</p>
+                `;
+
+                forecastContainer.appendChild(forecastItem);
+            });
+        }
+
+        const searchBtn = document.getElementById('search-btn');
+        const cityInput = document.getElementById('city-input');
+
+        searchBtn.addEventListener('click', () => {
+            const city = cityInput.value;
+            fetchWeather(city);
+            fetchForecast(city);
+        });
+    </script>
+</body>
+</html>
