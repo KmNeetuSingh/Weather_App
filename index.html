@@ -23,6 +23,7 @@
             background: radial-gradient(circle, #000000 30%, #1b2735 100%);
             color: white;
             background-size: cover;
+            background-attachment: fixed; /* Ensure background doesn't scroll */
         }
 
         .star {
@@ -98,7 +99,7 @@
             font-weight: bold;
         }
 
-        @media (max-width: 600px) {
+        @media (max-width: 768px) {
             .container {
                 padding: 15px;
             }
@@ -109,6 +110,25 @@
 
             input, button {
                 font-size: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+
+            .weather-info p, .forecast-item {
+                font-size: 1.2em;
+            }
+
+            input, button {
+                font-size: 12px;
+            }
+
+            .star {
+                width: 1.5px;
+                height: 1.5px;
             }
         }
 
@@ -204,86 +224,53 @@
 
     <div class="container">
         <h1>Weather App</h1>
-        <div class="weather-info">
-            <p class="city-name">City Name</p>
-            <p class="temperature">Temperature: --°C</p>
-            <p class="weather-condition">Condition: --</p>
-        </div>
         <div class="search">
-            <input type="text" id="city-input" placeholder="Enter city name">
-            <button id="search-btn">Search</button>
+            <input type="text" id="city" placeholder="Enter city name">
+            <button onclick="getWeather()">Get Weather</button>
         </div>
-        <div class="forecast">
-            <!-- 5-day forecast will be displayed here -->
+        <div class="weather-info">
+            <p id="weather-condition">--</p>
+            <p id="weather-temp">--°C</p>
         </div>
+        <div class="forecast" id="forecast"></div>
     </div>
+
     <script>
-        const apiKey = 'c349ebec38dacfc8d5dc75b71cfeea08';
-        const apiUrl = 'https://api.openweathermap.org/data/2.5/weather?q=';
-        const forecastApiUrl = 'https://api.openweathermap.org/data/2.5/forecast?q=';
+        const apiKey = 'YOUR_API_KEY';
 
-        async function fetchWeather(city) {
-            try {
-                const response = await fetch(`${apiUrl}${city}&appid=${apiKey}&units=metric`);
-                const data = await response.json();
-                displayWeather(data);
-            } catch (error) {
-                console.error('Error fetching weather data:', error);
-            }
+        function getWeather() {
+            const city = document.getElementById('city').value;
+            if (!city) return;
+
+            fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('weather-condition').innerText = data.weather[0].description;
+                    document.getElementById('weather-temp').innerText = `${Math.round(data.main.temp)}°C`;
+
+                    return fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=metric&appid=${apiKey}`);
+                })
+                .then(response => response.json())
+                .then(data => {
+                    const forecastContainer = document.getElementById('forecast');
+                    forecastContainer.innerHTML = '';
+                    for (let i = 0; i < data.list.length; i += 8) {
+                        const forecast = data.list[i];
+                        const forecastElement = document.createElement('div');
+                        forecastElement.className = 'forecast-item';
+                        forecastElement.innerText = `${new Date(forecast.dt * 1000).toLocaleDateString()} - ${forecast.weather[0].description}, ${Math.round(forecast.main.temp)}°C`;
+                        forecastContainer.appendChild(forecastElement);
+                    }
+                })
+                .catch(error => console.error('Error fetching weather data:', error));
         }
 
-        function displayWeather(data) {
-            const cityName = document.querySelector('.city-name');
-            const temperature = document.querySelector('.temperature');
-            const weatherCondition = document.querySelector('.weather-condition');
-
-            cityName.textContent = data.name;
-            temperature.textContent = `Temperature: ${data.main.temp}°C`;
-            weatherCondition.textContent = `Condition: ${data.weather[0].description}`;
+        // Add stars to background
+        for (let i = 0; i < 50; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            document.body.appendChild(star);
         }
-
-        async function fetchForecast(city) {
-            try {
-                const response = await fetch(`${forecastApiUrl}${city}&appid=${apiKey}&units=metric`);
-                const data = await response.json();
-                displayForecast(data);
-            } catch (error) {
-                console.error('Error fetching forecast data:', error);
-            }
-        }
-
-        function displayForecast(data) {
-            const forecastContainer = document.querySelector('.forecast');
-            forecastContainer.innerHTML = '';
-
-            const forecastList = data.list.filter((_, index) => index % 8 === 0);
-
-            forecastList.forEach(forecast => {
-                const forecastItem = document.createElement('div');
-                forecastItem.classList.add('forecast-item');
-
-                const date = new Date(forecast.dt_txt).toDateString();
-                const temp = forecast.main.temp;
-                const condition = forecast.weather[0].description;
-
-                forecastItem.innerHTML = `
-                    <p>${date}</p>
-                    <p>Temperature: ${temp}°C</p>
-                    <p>Condition: ${condition}</p>
-                `;
-
-                forecastContainer.appendChild(forecastItem);
-            });
-        }
-
-        const searchBtn = document.getElementById('search-btn');
-        const cityInput = document.getElementById('city-input');
-
-        searchBtn.addEventListener('click', () => {
-            const city = cityInput.value;
-            fetchWeather(city);
-            fetchForecast(city);
-        });
     </script>
 </body>
 </html>
